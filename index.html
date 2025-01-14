@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>汎用リンク埋め込みツール</title>
+  <title>YouTube埋め込みツール</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -47,69 +47,59 @@
       margin-top: 20px;
       border-radius: 8px;
     }
-    #embedContainer {
+    #videoContainer {
       margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <h1>汎用リンク埋め込みツール</h1>
+  <h1>YouTube動画埋め込みツール</h1>
   <div class="link-area">
-    <p>リンクを貼り付けて、「埋め込み表示」をクリックしてください。</p>
-    <input type="text" id="inputLink" placeholder="URLを入力" />
-    <button onclick="embedContent()">埋め込み表示</button>
+    <p>以下にYouTubeリンクを貼り付けて、「動画を表示」をクリックしてください。</p>
+    <input type="text" id="youtubeLink" placeholder="YouTubeリンクを入力" />
+    <button onclick="embedVideo()">動画を表示</button>
   </div>
 
-  <div id="embedContainer">
-    <!-- 埋め込みコンテンツがここに表示されます -->
+  <div id="videoContainer">
+    <!-- 埋め込み動画がここに表示されます -->
   </div>
 
   <script>
-    function embedContent() {
-      const input = document.getElementById("inputLink");
-      const embedContainer = document.getElementById("embedContainer");
+    function embedVideo() {
+      const input = document.getElementById("youtubeLink");
+      const videoContainer = document.getElementById("videoContainer");
       const originalLink = input.value.trim();
 
       if (!originalLink) {
-        alert("有効なURLを入力してください。");
+        alert("有効なYouTubeリンクを入力してください。");
         return;
       }
 
-      // Googleリダイレクトリンクを処理して実際のリンクを抽出
+      // Googleリダイレクトリンクの処理
       const googleMatch = originalLink.match(/https:\/\/www\.google\.com\/url\?.*?[&?]q=([^&]+)/);
       const finalLink = googleMatch ? decodeURIComponent(googleMatch[1]) : originalLink;
 
-      // URLがYouTubeの場合
-      if (finalLink.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/)) {
-        const videoID = finalLink.match(/(?:watch\?v=|youtu\.be\/)([^&?]+)/)[1];
-        embedContainer.innerHTML = `
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/${videoID}"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        `;
-      }
-      // URLがTwitterの場合
-      else if (finalLink.match(/(?:https?:\/\/)?(?:www\.)?twitter\.com\/.+\/status\/\d+/)) {
-        embedContainer.innerHTML = `
-          <blockquote class="twitter-tweet">
-            <a href="${finalLink}"></a>
-          </blockquote>
-          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-        `;
-      }
-      // その他のURL
-      else {
-        embedContainer.innerHTML = `
-          <p>リンク先を開くには以下をクリックしてください：</p>
-          <a href="${finalLink}" target="_blank" rel="noopener noreferrer">${finalLink}</a>
-        `;
+      // YouTubeリンクの検証
+      const youtubeMatch = finalLink.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+      if (!youtubeMatch) {
+        alert("無効なYouTubeリンクです。もう一度お試しください。");
+        return;
       }
 
+      // 動画IDの取得
+      const videoID = youtubeMatch[2];
+
+      // 動画を表示
+      videoContainer.innerHTML = `
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/${videoID}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      `;
       input.value = ""; // 入力欄をクリア
     }
   </script>
