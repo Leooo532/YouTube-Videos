@@ -84,16 +84,13 @@
         return;
       }
 
-      // YouTubeまたはGoogleリンクから動画IDを抽出
-      let videoID = null;
-      const youtubeMatch = videoLink.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
-      const googleMatch = videoLink.match(/(?:https?:\/\/)?(?:www\.)?google\.com\/url\?.*?q=(https%3A%2F%2Fwww\.youtube\.com%2Fwatch%3Fv%3D([^&]+))/);
+      // Googleリダイレクトリンクを処理してYouTubeリンクに変換
+      const googleMatch = videoLink.match(/https:\/\/www\.google\.com\/url\?.*?[&?]q=([^&]+)/);
+      const decodedLink = googleMatch ? decodeURIComponent(googleMatch[1]) : videoLink;
 
-      if (youtubeMatch) {
-        videoID = youtubeMatch[1] || youtubeMatch[2];
-      } else if (googleMatch) {
-        videoID = decodeURIComponent(googleMatch[2]); // GoogleリンクからYouTube動画IDを抽出
-      }
+      // YouTubeリンクから動画IDを抽出
+      const youtubeMatch = decodedLink.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
+      const videoID = youtubeMatch ? (youtubeMatch[1] || youtubeMatch[2]) : null;
 
       if (!videoID) {
         alert("無効なYouTubeリンクです。もう一度お試しください。");
@@ -101,7 +98,7 @@
       }
 
       // ローカルストレージにリンクを保存
-      localStorage.setItem("youtubeLink", videoLink);
+      localStorage.setItem("youtubeLink", decodedLink);
 
       // 動画を表示
       videoContainer.innerHTML = `
