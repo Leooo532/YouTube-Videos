@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube埋め込み表示</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    input {
+      padding: 10px;
+      width: 300px;
+      margin-bottom: 20px;
+    }
+    iframe {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube埋め込み表示ツール</h1>
+  <p>YouTube動画のリンクを以下に貼り付けてください:</p>
+  <input type="text" id="youtubeLink" placeholder="YouTubeリンクを入力" />
+  <button onclick="embedVideo()">動画を表示</button>
+
+  <div id="videoContainer">
+    <!-- 埋め込み動画がここに表示されます -->
+  </div>
+
+  <script>
+    // ページ読み込み時にローカルストレージからリンクを取得
+    window.onload = function () {
+      const savedLink = localStorage.getItem("youtubeLink");
+      if (savedLink) {
+        embedVideo(savedLink);
+      }
+    };
+
+    // YouTube動画を埋め込む関数
+    function embedVideo(link = null) {
+      const input = document.getElementById("youtubeLink");
+      const videoContainer = document.getElementById("videoContainer");
+      const videoLink = link || input.value;
+
+      if (!videoLink) {
+        alert("有効なYouTubeリンクを入力してください。");
+        return;
+      }
+
+      // YouTubeリンクから動画IDを抽出
+      const videoID = videoLink.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
+      const id = videoID ? (videoID[1] || videoID[2]) : null;
+
+      if (!id) {
+        alert("無効なYouTubeリンクです。もう一度お試しください。");
+        return;
+      }
+
+      // ローカルストレージにリンクを保存
+      localStorage.setItem("youtubeLink", videoLink);
+
+      // 動画を表示
+      videoContainer.innerHTML = `
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/${id}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      `;
+      input.value = ""; // 入力欄をクリア
+    }
+  </script>
+</body>
+</html>
