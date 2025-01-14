@@ -77,7 +77,7 @@
     function embedVideo(link = null) {
       const input = document.getElementById("youtubeLink");
       const videoContainer = document.getElementById("videoContainer");
-      const videoLink = link || input.value;
+      const videoLink = link || input.value.trim();
 
       if (!videoLink) {
         alert("有効なYouTubeリンクを入力してください。");
@@ -85,12 +85,15 @@
       }
 
       // Googleリダイレクトリンクを処理してYouTubeリンクに変換
+      let decodedLink = videoLink;
       const googleMatch = videoLink.match(/https:\/\/www\.google\.com\/url\?.*?[&?]q=([^&]+)/);
-      const decodedLink = googleMatch ? decodeURIComponent(googleMatch[1]) : videoLink;
+      if (googleMatch) {
+        decodedLink = decodeURIComponent(googleMatch[1]);
+      }
 
       // YouTubeリンクから動画IDを抽出
-      const youtubeMatch = decodedLink.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
-      const videoID = youtubeMatch ? (youtubeMatch[1] || youtubeMatch[2]) : null;
+      const youtubeMatch = decodedLink.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+      const videoID = youtubeMatch ? youtubeMatch[1] : null;
 
       if (!videoID) {
         alert("無効なYouTubeリンクです。もう一度お試しください。");
