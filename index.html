@@ -3,28 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube埋め込み表示</title>
+  <title>YouTube埋め込みツール</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    .link-area {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
     }
     input {
+      width: calc(100% - 22px);
       padding: 10px;
-      width: 300px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
     iframe {
       margin-top: 20px;
+      border-radius: 8px;
+    }
+    #videoContainer {
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <h1>YouTube埋め込み表示ツール</h1>
-  <p>YouTube動画のリンクを以下に貼り付けてください:</p>
-  <input type="text" id="youtubeLink" placeholder="YouTubeリンクを入力" />
-  <button onclick="embedVideo()">動画を表示</button>
+  <h1>YouTube動画埋め込みツール</h1>
+  <div class="link-area">
+    <p>以下にYouTubeリンクを貼り付けて、「動画を表示」をクリックしてください。</p>
+    <input type="text" id="youtubeLink" placeholder="YouTubeリンクを入力" />
+    <button onclick="embedVideo()">動画を表示</button>
+  </div>
 
   <div id="videoContainer">
     <!-- 埋め込み動画がここに表示されます -->
