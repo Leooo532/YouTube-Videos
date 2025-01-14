@@ -84,11 +84,18 @@
         return;
       }
 
-      // YouTubeリンクから動画IDを抽出
-      const videoID = videoLink.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
-      const id = videoID ? (videoID[1] || videoID[2]) : null;
+      // YouTubeまたはGoogleリンクから動画IDを抽出
+      let videoID = null;
+      const youtubeMatch = videoLink.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
+      const googleMatch = videoLink.match(/(?:https?:\/\/)?(?:www\.)?google\.com\/url\?.*?q=(https%3A%2F%2Fwww\.youtube\.com%2Fwatch%3Fv%3D([^&]+))/);
 
-      if (!id) {
+      if (youtubeMatch) {
+        videoID = youtubeMatch[1] || youtubeMatch[2];
+      } else if (googleMatch) {
+        videoID = decodeURIComponent(googleMatch[2]); // GoogleリンクからYouTube動画IDを抽出
+      }
+
+      if (!videoID) {
         alert("無効なYouTubeリンクです。もう一度お試しください。");
         return;
       }
@@ -101,7 +108,7 @@
         <iframe
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/${id}"
+          src="https://www.youtube.com/embed/${videoID}"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
